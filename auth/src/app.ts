@@ -8,8 +8,7 @@ import { signupRouter } from './routes/signup';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 
-import { errorHandler } from './middlewares/error-handler';
-import { NotFoundError } from './errors/not-found-error';
+import { errorHandler, NotFoundError } from '@bniki-tickets/common';
 
 const app = express();
 // Traffic to app is beeing proxied by ingress nginx, so as we require in cookieSession that cookies will only be used if a user visit the app over https, we set express to trust traffic coming from that proxy
