@@ -2,19 +2,13 @@ import request from 'supertest';
 import { app } from '../../app';
 
 it('returns a 200 on successful signin and also sets a cookie', async () => {
-  await request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test@test.com',
-      password: 'password'
-    })
-    .expect(201);
+  await global.signup();
 
   const response = await request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test@test.com',
-      password: 'password'
+      email: global.testEmail,
+      password: global.testPassword
     })
     .expect(200);
 
@@ -22,19 +16,13 @@ it('returns a 200 on successful signin and also sets a cookie', async () => {
 });
 
 it('returns a 400 with invalid credentials', async () => {
-  await request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test@test.com',
-      password: 'password'
-    })
-    .expect(201);
+  await global.signup();
 
   // Invalid password
   await request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test@test.com',
+      email: global.testEmail,
       password: 'sdbkjhdfb'
     })
     .expect(400);
@@ -44,7 +32,7 @@ it('returns a 400 with invalid credentials', async () => {
     .post('/api/users/signin')
     .send({
       email: 'supertest@test.com',
-      password: 'password'
+      password: global.testPassword
     })
     .expect(400);
 
@@ -52,7 +40,7 @@ it('returns a 400 with invalid credentials', async () => {
   await request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test@test.com',
+      email: global.testEmail,
       password: ''
     })
     .expect(400);
@@ -62,7 +50,7 @@ it('returns a 400 with invalid credentials', async () => {
     .post('/api/users/signin')
     .send({
       email: '',
-      password: 'password'
+      password: global.testPassword
     })
     .expect(400);
 
