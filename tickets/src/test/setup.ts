@@ -5,8 +5,10 @@ import jwt from 'jsonwebtoken';
 declare global {
   namespace NodeJS {
     interface Global {
-      signin(): string[];
-      testEmail: string;
+      testTitle: string;
+      testPrice: number;
+      getCookie(): string[];
+      generateId(): string;
     }
   }
 }
@@ -37,11 +39,15 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.testEmail = 'test@test.com';
-global.signin = () => {
+global.testTitle = 'Concert';
+global.testPrice = 100;
+
+global.generateId = () => new mongoose.Types.ObjectId().toHexString();
+
+global.getCookie = () => {
   // Hardcode a JWT payload and create the actual JWT out of it
   const token = jwt.sign(
-    { id: 'sliuhkjhbck', email: 'test@test.com' },
+    { id: global.generateId(), email: 'test@test.com' },
     process.env.JWT_KEY!
   );
 

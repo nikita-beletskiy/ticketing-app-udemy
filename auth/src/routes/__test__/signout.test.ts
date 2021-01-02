@@ -1,8 +1,10 @@
 import request from 'supertest';
 import { app } from '../../app';
 
+const signup = global.signup;
+
 it('clears the cookie after signout', async () => {
-  await global.signup();
+  await signup();
 
   const response = await request(app)
     .post('/api/users/signout')
