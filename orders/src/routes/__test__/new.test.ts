@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import { Order, OrderStatus } from '../../models/order';
 import { Ticket } from '../../models/ticket';
+import { natsWrapper } from '../../nats-wrapper';
 
 const title = global.testTitle;
 const price = global.testPrice;
@@ -34,7 +35,7 @@ it('returns an error if the ticket is already reserved', async () => {
     .expect(400);
 });
 
-it('reserves a ticket', async () => {
+it('reserves a ticket and emits order:created event', async () => {
   const ticket = Ticket.build({ title, price });
   await ticket.save();
 
@@ -43,6 +44,6 @@ it('reserves a ticket', async () => {
     .set('Cookie', getCookie())
     .send({ ticketId: ticket.id })
     .expect(201);
-});
 
-it.todo('emits order:created event');
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});

@@ -2,11 +2,12 @@ import request from 'supertest';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { Order, OrderStatus } from '../../models/order';
+import { natsWrapper } from '../../nats-wrapper';
 
 const title = global.testTitle;
 const price = global.testPrice;
 
-it('marks an order as cancelled', async () => {
+it('marks an order as cancelled and emits order:cancelled event', async () => {
   // Create a ticket
   const ticket = Ticket.build({ title, price });
   await ticket.save();
@@ -31,6 +32,5 @@ it('marks an order as cancelled', async () => {
   const updatedOrder = await Order.findById(order.id);
 
   expect(updatedOrder!.status).toEqual(OrderStatus.Cancelled);
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });
-
-it.todo('emits order:cancelled event');
