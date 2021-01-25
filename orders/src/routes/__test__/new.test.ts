@@ -7,6 +7,7 @@ import { natsWrapper } from '../../nats-wrapper';
 const title = global.testTitle;
 const price = global.testPrice;
 const getCookie = global.getCookie;
+const generateId = global.generateId;
 
 it('returns an error if the ticket does not exist', async () => {
   await request(app)
@@ -17,7 +18,11 @@ it('returns an error if the ticket does not exist', async () => {
 });
 
 it('returns an error if the ticket is already reserved', async () => {
-  const ticket = Ticket.build({ title, price });
+  const ticket = Ticket.build({
+    id: generateId(),
+    title,
+    price
+  });
   await ticket.save();
 
   const order = Order.build({
@@ -36,7 +41,11 @@ it('returns an error if the ticket is already reserved', async () => {
 });
 
 it('reserves a ticket and emits order:created event', async () => {
-  const ticket = Ticket.build({ title, price });
+  const ticket = Ticket.build({
+    id: generateId(),
+    title,
+    price
+  });
   await ticket.save();
 
   await request(app)

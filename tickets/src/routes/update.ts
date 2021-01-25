@@ -8,7 +8,8 @@ import {
   validateRequest,
   requireAuth,
   NotFoundError,
-  NotAuthorizedError
+  NotAuthorizedError,
+  BadRequestError
 } from '@bniki-tickets/common';
 
 const router = express.Router();
@@ -26,6 +27,9 @@ router.put(
 
     if (!ticket) throw new NotFoundError();
 
+    if (ticket.orderId)
+      throw new BadRequestError('Cannot edit a reserved ticket');
+
     if (ticket.userId !== req.currentUser!.id) throw new NotAuthorizedError();
 
     ticket.set({ title: req.body.title, price: req.body.price });
@@ -34,7 +38,8 @@ router.put(
       id: ticket.id,
       title: ticket.title,
       price: ticket.price,
-      userId: ticket.userId
+      userId: ticket.userId,
+      version: ticket.version
     });
 
     res.send(ticket);

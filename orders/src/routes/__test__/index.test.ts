@@ -6,7 +6,11 @@ const title = global.testTitle;
 const price = global.testPrice;
 
 const buildTicket = async () => {
-  const ticket = Ticket.build({ title, price });
+  const ticket = Ticket.build({
+    id: global.generateId(),
+    title,
+    price
+  });
   await ticket.save();
 
   return ticket;

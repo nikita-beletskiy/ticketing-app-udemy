@@ -4,13 +4,19 @@ import { Ticket } from '../../models/ticket';
 
 const title = global.testTitle;
 const price = global.testPrice;
+const getCookie = global.getCookie;
+const generateId = global.generateId;
 
 it('fetches the order', async () => {
   // Create a ticket
-  const ticket = Ticket.build({ title, price });
+  const ticket = Ticket.build({
+    id: generateId(),
+    title,
+    price
+  });
   await ticket.save();
 
-  const user = global.getCookie();
+  const user = getCookie();
 
   // Make a request to create an order with this ticket
   const { body: order } = await request(app)
@@ -31,10 +37,14 @@ it('fetches the order', async () => {
 
 it(`returns an error if a user tries to fetch another's order`, async () => {
   // Create a ticket
-  const ticket = Ticket.build({ title, price });
+  const ticket = Ticket.build({
+    id: generateId(),
+    title,
+    price
+  });
   await ticket.save();
 
-  const user = global.getCookie();
+  const user = getCookie();
 
   // Make a request to create an order with this ticket
   const { body: order } = await request(app)
@@ -46,7 +56,7 @@ it(`returns an error if a user tries to fetch another's order`, async () => {
   // Make a request to fetch the order, but with different cookie
   await request(app)
     .get(`/api/orders/${order.id}`)
-    .set('Cookie', global.getCookie())
+    .set('Cookie', getCookie())
     .send()
     .expect(401);
 });

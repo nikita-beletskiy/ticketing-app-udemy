@@ -9,7 +9,11 @@ const price = global.testPrice;
 
 it('marks an order as cancelled and emits order:cancelled event', async () => {
   // Create a ticket
-  const ticket = Ticket.build({ title, price });
+  const ticket = Ticket.build({
+    id: global.generateId(),
+    title,
+    price
+  });
   await ticket.save();
 
   const user = global.getCookie();
