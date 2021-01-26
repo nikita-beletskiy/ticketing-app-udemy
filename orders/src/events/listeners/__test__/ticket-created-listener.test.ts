@@ -20,9 +20,7 @@ it('creates and saves a ticket and acks the message', async () => {
 
   // Create a fake message object
   // @ts-ignore
-  const msg: Message = {
-    ack: jest.fn()
-  };
+  const msg: Message = { ack: jest.fn() };
 
   // Call the onMessage function with the data and message objects
   await listener.onMessage(data, msg);

@@ -32,9 +32,7 @@ it('sets the userId of the ticket, acks the message and publishes a ticket:updat
 
   // Create a fake message object
   // @ts-ignore
-  const msg: Message = {
-    ack: jest.fn()
-  };
+  const msg: Message = { ack: jest.fn() };
 
   await listener.onMessage(data, msg);
 

@@ -30,9 +30,7 @@ it('updates the ticket, acks the message and publishes a ticket:updated event', 
 
   // Create a fake message object
   // @ts-ignore
-  const msg: Message = {
-    ack: jest.fn()
-  };
+  const msg: Message = { ack: jest.fn() };
 
   await listener.onMessage(data, msg);
 
