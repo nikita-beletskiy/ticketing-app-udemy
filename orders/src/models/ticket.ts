@@ -25,15 +25,8 @@ interface TicketModel extends mongoose.Model<TicketDoc> {
 
 const ticketSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true
-    },
-    price: {
-      type: Number,
-      required: true,
-      min: 0
-    }
+    title: { type: String, required: true },
+    price: { type: Number, required: true, min: 0 }
   },
   {
     toJSON: {
@@ -47,9 +40,8 @@ const ticketSchema = new mongoose.Schema(
 ticketSchema.set('versionKey', 'version');
 ticketSchema.plugin(updateIfCurrentPlugin);
 
-ticketSchema.statics.findCurrent = (event: { id: string; version: number }) => {
-  return Ticket.findOne({ _id: event.id, version: event.version - 1 });
-};
+ticketSchema.statics.findCurrent = (event: { id: string; version: number }) =>
+  Ticket.findOne({ _id: event.id, version: event.version - 1 });
 
 ticketSchema.statics.build = (attrs: TicketAttrs) =>
   new Ticket({ _id: attrs.id, title: attrs.title, price: attrs.price });

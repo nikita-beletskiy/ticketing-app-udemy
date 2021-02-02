@@ -1,41 +1,33 @@
 import mongoose from 'mongoose';
-import { TicketDoc } from './ticket';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 
 import { OrderStatus } from '@bniki-tickets/common';
 
-export { OrderStatus };
-
 interface OrderAttrs {
+  id: string;
+  version: number;
   userId: string;
+  price: number;
   status: OrderStatus;
-  expiresAt: Date;
-  ticket: TicketDoc;
 }
 
 interface OrderDoc extends mongoose.Document {
-  userId: string;
-  status: OrderStatus;
-  expiresAt: Date;
-  ticket: TicketDoc;
   version: number;
+  userId: string;
+  price: number;
+  status: OrderStatus;
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {
   build(attrs: OrderAttrs): OrderDoc;
+  findCurrent(event: { id: string; version: number }): Promise<OrderDoc | null>;
 }
 
 const orderSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
-    expiresAt: { type: mongoose.Schema.Types.Date },
-    ticket: { type: mongoose.Schema.Types.ObjectId, ref: 'Ticket' },
-    status: {
-      type: String,
-      required: true,
-      enum: Object.values(OrderStatus),
-      default: OrderStatus.Created
-    }
+    price: { type: Number, required: true },
+    status: { type: String, required: true }
   },
   {
     toJSON: {
@@ -50,7 +42,17 @@ const orderSchema = new mongoose.Schema(
 orderSchema.set('versionKey', 'version');
 orderSchema.plugin(updateIfCurrentPlugin);
 
-orderSchema.statics.build = (attrs: OrderAttrs) => new Order(attrs);
+orderSchema.statics.findCurrent = (event: { id: string; version: number }) =>
+  Order.findOne({ _id: event.id, version: event.version - 1 });
+
+orderSchema.statics.build = (atts: OrderAttrs) =>
+  new Order({
+    _id: atts.id,
+    version: atts.version,
+    price: atts.price,
+    userId: atts.userId,
+    status: atts.status
+  });
 
 const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);
 
