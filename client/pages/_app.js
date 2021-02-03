@@ -5,7 +5,9 @@ import Header from '../components/Header';
 const AppComponent = ({ Component, pageProps, currentUser }) => (
   <div>
     <Header currentUser={currentUser} />
-    <Component {...pageProps} />
+    <div className='container'>
+      <Component currentUser={currentUser} {...pageProps} />
+    </div>
   </div>
 );
 
@@ -17,7 +19,11 @@ AppComponent.getInitialProps = async appContext => {
   // Fetching data for each individual component that gets passed into AppComponent (defined in that component, but must be invoked manually, so we do)
   let pageProps = {};
   if (appContext.Component.getInitialProps)
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+    pageProps = await appContext.Component.getInitialProps(
+      appContext.ctx,
+      client,
+      data.currentUser
+    );
 
   // Returned object will be used as an argument to AppComponent
   return { pageProps, ...data };
