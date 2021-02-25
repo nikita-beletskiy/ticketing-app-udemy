@@ -1,5 +1,5 @@
 import Link from 'next/link';
-
+console.log('Test console log');
 const LandingPage = ({ currentUser, tickets }) => (
   <div>
     <h1>Tickets</h1>
