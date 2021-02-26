@@ -12,15 +12,10 @@ import {
 } from '@bniki-tickets/common';
 
 const app = express();
-// Traffic to app is beeing proxied by ingress nginx, so as we require in cookieSession that cookies will only be used if a user visit the app over https, we set express to trust traffic coming from that proxy
+
 app.set('trust proxy', true);
 app.use(json());
-app.use(
-  cookieSession({
-    signed: false,
-    secure: process.env.NODE_ENV !== 'test'
-  })
-);
+app.use(cookieSession({ signed: false, secure: false }));
 app.use(currentUser);
 
 app.use(createChargeRouter);
