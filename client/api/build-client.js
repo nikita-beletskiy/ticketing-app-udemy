@@ -4,8 +4,7 @@ import axios from 'axios';
 const buildClient = ({ req }) =>
   typeof window === 'undefined'
     ? axios.create({
-        baseURL:
-          'http://ingress-nginx-controller.kube-system.svc.cluster.local',
+        baseURL: 'http://www.ticketing-app-udemy.xyz/',
         headers: req.headers
       })
     : axios.create({ baseURL: '/' });
